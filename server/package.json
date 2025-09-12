@@ -8,7 +8,7 @@
     "dev": "node index.js",
     "start": "node index.js",
     "build": "npm install",
-    "test": "NODE_OPTIONS=--experimental-vm-modules jest"
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest --runInBand --detectOpenHandles"
   },
   "keywords": [],
   "author": "",
