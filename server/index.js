@@ -4,6 +4,8 @@ import { Pool } from "pg";
 const app = express();
 const PORT = process.env.PORT || 8080;
 
+app.use(express.json())
+
 const pool = new Pool({
   user: process.env.DB_USER || "postgres",
   database: process.env.DB_NAME || "postgres",
@@ -12,9 +14,33 @@ const pool = new Pool({
   port: process.env.DB_PORT || 5432,
 });
 
-app.route("/").get((req, res) => {
-  console.log(`Welcome to the Server 🙏 !!`);
-  res.status(200).send(`Welcome to the Server 🙏 !!`);
+app
+  .route("/")
+  .get((req, res) => {
+    console.log(`Welcome to the Server 🙏 !!`);
+    res.status(200).send(`Welcome to the Server 🙏 !!`);
+  })
+  .post((req, res) => {
+    const { name } = req.body;
+    let bigName = true;
+    if (!name || !(name?.length >= 6)) {
+      bigName = false;
+    }
+    res.status(201).json({ message: `Hello ${name}`, bigName });
+  });
+
+app.route("/set-password").post((req, res) => {
+  const { password } = req.body;
+
+  let message;
+  if (!password) {
+    message = "Provide Password";
+  } else if (password.length < 8) {
+    message = "Small";
+  } else {
+    message = "Strong";
+  }
+  res.status(201).json({ message });
 });
 
 app.route("/test").post(async (req, res) => {
@@ -29,3 +55,5 @@ app.route("/test").post(async (req, res) => {
 app.listen(PORT, () => {
   console.log(`🚀 Server is running on PORT : ${PORT}`);
 });
+
+export default app;
